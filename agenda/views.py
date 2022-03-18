@@ -5,7 +5,7 @@ from rest_framework.decorators import api_view
 from agenda.models import Agendamento
 from agenda.serializers import AgendamentoSerializer
 
-@api_view(http_method_names=["GET", "PUT"])
+@api_view(http_method_names=["GET", "PATCH"])
 def agendamento_detail(request, id):
   if request.method == "GET":
     obj = get_object_or_404(Agendamento, id=id)
@@ -13,10 +13,10 @@ def agendamento_detail(request, id):
 
     return JsonResponse(serializer.data)
   
-  if request.method == "PUT":
+  if request.method == "PATCH":
     obj = get_object_or_404(Agendamento, id=id)
     data = request.data
-    serializer = AgendamentoSerializer(data=data)
+    serializer = AgendamentoSerializer(data=data, partial=True)
 
     if serializer.is_valid():
       valitated_data = serializer.validated_data
@@ -26,7 +26,7 @@ def agendamento_detail(request, id):
       obj.telefone_cliente = valitated_data.get("telefone_cliente", obj.telefone_cliente)
       obj.save()
 
-      return JsonResponse(serializer.data, status=200)
+      return JsonResponse(valitated_data, status=200)
     
     return JsonResponse(serializer.errors, status=400)
 
