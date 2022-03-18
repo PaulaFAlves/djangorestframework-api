@@ -8,31 +8,25 @@ from agenda.serializers import AgendamentoSerializer
 
 @api_view(http_method_names=["GET", "PATCH", "DELETE"])
 def agendamento_detail(request, id):
+  obj = get_object_or_404(Agendamento, id=id)
+
   if request.method == "GET":
-    obj = get_object_or_404(Agendamento, id=id)
     serializer = AgendamentoSerializer(obj)
 
     return JsonResponse(serializer.data)
   
   if request.method == "PATCH":
-    obj = get_object_or_404(Agendamento, id=id)
     data = request.data
-    serializer = AgendamentoSerializer(data=data, partial=True)
+    serializer = AgendamentoSerializer(obj, data=data, partial=True)
 
     if serializer.is_valid():
-      valitated_data = serializer.validated_data
-      obj.data_horario = valitated_data.get("data_horario", obj.data_horario)
-      obj.nome_cliente = valitated_data.get("nome_cliente", obj.nome_cliente)
-      obj.email_cliente = valitated_data.get("email_cliente", obj.email_cliente)
-      obj.telefone_cliente = valitated_data.get("telefone_cliente", obj.telefone_cliente)
-      obj.save()
+      serializer.save()
 
-      return JsonResponse(valitated_data, status=200)
+      return JsonResponse(serializer.data, status=200)
     
     return JsonResponse(serializer.errors, status=400)
 
   if request.method == "DELETE":
-    obj = get_object_or_404(Agendamento, id=id)
     obj.is_canceled = True
     obj.save()
 

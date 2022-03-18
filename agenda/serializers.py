@@ -17,3 +17,12 @@ class AgendamentoSerializer(serializers.Serializer):
       )
      
     return agendamento
+
+  def update(self, instance, validated_data):
+    instance.data_horario = validated_data.get("data_horario", instance.data_horario)
+    instance.nome_cliente = validated_data.get("nome_cliente", instance.nome_cliente)
+    instance.email_cliente = validated_data.get("email_cliente", instance.email_cliente)
+    instance.telefone_cliente = validated_data.get("telefone_cliente", instance.telefone_cliente)
+    instance.save()
+
+    return instance
