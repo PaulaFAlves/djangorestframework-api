@@ -1,15 +1,35 @@
+import re
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from rest_framework.decorators import api_view
 from agenda.models import Agendamento
 from agenda.serializers import AgendamentoSerializer
 
-@api_view(http_method_names=["GET"])
+@api_view(http_method_names=["GET", "PUT"])
 def agendamento_detail(request, id):
-  obj = get_object_or_404(Agendamento, id=id)
-  serializer = AgendamentoSerializer(obj)
+  if request.method == "GET":
+    obj = get_object_or_404(Agendamento, id=id)
+    serializer = AgendamentoSerializer(obj)
 
-  return JsonResponse(serializer.data)
+    return JsonResponse(serializer.data)
+  
+  if request.method == "PUT":
+    obj = get_object_or_404(Agendamento, id=id)
+    data = request.data
+    serializer = AgendamentoSerializer(data=data)
+
+    if serializer.is_valid():
+      valitated_data = serializer.validated_data
+      obj.data_horario = valitated_data.get("data_horario", obj.data_horario)
+      obj.nome_cliente = valitated_data.get("nome_cliente", obj.nome_cliente)
+      obj.email_cliente = valitated_data.get("email_cliente", obj.email_cliente)
+      obj.telefone_cliente = valitated_data.get("telefone_cliente", obj.telefone_cliente)
+      obj.save()
+
+      return JsonResponse(serializer.data, status=200)
+    
+    return JsonResponse(serializer.errors, status=400)
+
 
 @api_view(http_method_names=["GET", "POST"])
 def agendamento_list(request):
