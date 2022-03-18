@@ -51,13 +51,7 @@ def agendamento_list(request):
     serializer = AgendamentoSerializer(data=data)
 
     if serializer.is_valid():
-      valitated_data = serializer.validated_data
-      Agendamento.objects.create(
-        data_horario=valitated_data["data_horario"],
-        nome_cliente=valitated_data["nome_cliente"],
-        email_cliente=valitated_data["email_cliente"],
-        telefone_cliente=valitated_data["telefone_cliente"],
-      )
+      serializer.save()
 
       return JsonResponse(serializer.data, status=201)
 
