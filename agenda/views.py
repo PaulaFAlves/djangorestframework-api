@@ -2,10 +2,11 @@ import re
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from rest_framework.decorators import api_view
+from rest_framework.response import Response
 from agenda.models import Agendamento
 from agenda.serializers import AgendamentoSerializer
 
-@api_view(http_method_names=["GET", "PATCH"])
+@api_view(http_method_names=["GET", "PATCH", "DELETE"])
 def agendamento_detail(request, id):
   if request.method == "GET":
     obj = get_object_or_404(Agendamento, id=id)
@@ -30,6 +31,11 @@ def agendamento_detail(request, id):
     
     return JsonResponse(serializer.errors, status=400)
 
+  if request.method == "DELETE":
+    obj = get_object_or_404(Agendamento, id=id)
+    obj.delete()
+
+    return Response(status=204)
 
 @api_view(http_method_names=["GET", "POST"])
 def agendamento_list(request):
