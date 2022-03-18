@@ -33,14 +33,15 @@ def agendamento_detail(request, id):
 
   if request.method == "DELETE":
     obj = get_object_or_404(Agendamento, id=id)
-    obj.delete()
+    obj.is_canceled = True
+    obj.save()
 
     return Response(status=204)
 
 @api_view(http_method_names=["GET", "POST"])
 def agendamento_list(request):
   if request.method == 'GET':
-    qs = Agendamento.objects.all()
+    qs = Agendamento.objects.all().filter(is_canceled=False)
     serializer = AgendamentoSerializer(qs, many=True)
 
     return JsonResponse(serializer.data, safe=False)
