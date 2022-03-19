@@ -12,7 +12,6 @@ class TestAgendamento(TestCase):
 
   def test_cria_agendamento(self):
     agendamento = Agendamento.objects.create(data_horario=timezone.now(), nome_cliente="PAula", email_cliente="paula@email.com", telefone_cliente="444")
-    agendamento.save()
 
     client = Agendamento.objects.get(nome_cliente="PAula")
 
@@ -20,7 +19,6 @@ class TestAgendamento(TestCase):
 
   def test_agendamento_tem_atributo_is_canceled_false_quando_criado(self):
     agendamento = Agendamento.objects.create(data_horario=timezone.now(), nome_cliente="PAula", email_cliente="paula@email.com", telefone_cliente="444")
-    agendamento.save()
 
     client = Agendamento.objects.get(nome_cliente="PAula")
 
@@ -28,7 +26,6 @@ class TestAgendamento(TestCase):
 
   def test_atributo_is_canceled_true_quando_agendamento_cancelado(self):
     agendamento = Agendamento.objects.create(data_horario=timezone.now(), nome_cliente="PAula", email_cliente="paula@email.com", telefone_cliente="444")
-    agendamento.save()
 
     client = Agendamento.objects.get(nome_cliente="PAula")
     response = self.client.delete(f'/api/agendamentos/{client.id}/')
