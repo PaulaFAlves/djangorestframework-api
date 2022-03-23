@@ -7,9 +7,6 @@ from agenda.models import Agendamento
 from django.utils import timezone 
 from rest_framework import serializers
 
-
-
-
 class TestAgendamento(APITestCase):
   def test_listagem_vazia(self):
     response = self.client.get('/api/agendamentos/')
@@ -42,8 +39,12 @@ class TestAgendamento(APITestCase):
     self.assertEqual(data, agendamentos_esperados)
 
   def test_quanto_request_retorna_400(self):
-    Agendamento.objects.create(data_horario=datetime(2022, 12, 12))
-    self.assertRaises(ValidationError)
+    client = Client()
+    response = client.post('/api/agendamentos/', {'data_horario':'2020-12-12T00:00:00Z', 'nome_cliente':"PAula", 'email_cliente':"paula@email.com", 'telefone_cliente':"444" })
+    self.assertEqual(response.status_code, 400)
+
+    data = json.loads(response.content)
+    self.assertEqual(data, {'data_horario': ['Agendamento não pode ser feito no passado.']})
 
   def test_cria_agendamento(self):
     Agendamento.objects.create(data_horario=timezone.now(), nome_cliente="PAula", email_cliente="paula@email.com", telefone_cliente="444")
