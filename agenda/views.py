@@ -9,25 +9,13 @@ from agenda.serializers import AgendamentoSerializer
 from rest_framework import mixins
 from rest_framework import generics
 
-class AgendamentoDetail(mixins.RetrieveModelMixin, mixins.UpdateModelMixin, mixins.DestroyModelMixin, generics.GenericAPIView):
+class AgendamentoDetail(generics.RetrieveUpdateDestroyAPIView):
   queryset = Agendamento.objects.all()
   serializer_class = AgendamentoSerializer
 
-  def get(self, request, *args, **kwargs):
-    return self.retrieve(request, *args, **kwargs)
-
-  def patch(self, request, *args, **kwargs):
-    return self.partial_update(request, *args, **kwargs)
-
-  def delete(self, request, *args, **kwargs):
-    return self.destroy(request, *args, **kwargs)
-
-class AgendamentoList(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
+  def perform_destroy(self, instance):
+    instance.is_canceled = True
+    instance.save()
+class AgendamentoList(generics.ListCreateAPIView):
   queryset = Agendamento.objects.all()
   serializer_class = AgendamentoSerializer
-
-  def get(self, request, *args, **kwargs):
-    return self.list(request, *args, **kwargs)
-
-  def post(self, request, *args, **kwargs):
-    return self.create(request, *args, **kwargs)

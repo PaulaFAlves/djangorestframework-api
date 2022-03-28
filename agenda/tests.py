@@ -66,3 +66,6 @@ class TestAgendamento(APITestCase):
     client = Agendamento.objects.get(nome_cliente="PAula")
     response = self.client.delete(f'/api/agendamentos/{client.id}/')
     self.assertEqual(response.status_code, 204)
+
+    client = Agendamento.objects.get(id=client.id)
+    self.assertTrue(client.is_canceled)
