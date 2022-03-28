@@ -28,8 +28,8 @@ class TestAgendamento(APITestCase):
         'telefone_cliente': '444'
         }]
 
-    Agendamento.objects.create(data_horario=datetime(2022, 12, 12), nome_cliente="PAula", email_cliente="paula@email.com", telefone_cliente="444")
-    Agendamento.objects.create(data_horario=datetime(2023, 12, 12), nome_cliente="Carol", email_cliente="paula@email.com", telefone_cliente="444")
+    Agendamento.objects.create(data_horario=datetime(2022, 12, 12, tzinfo=timezone.utc), nome_cliente="PAula", email_cliente="paula@email.com", telefone_cliente="444")
+    Agendamento.objects.create(data_horario=datetime(2023, 12, 12, tzinfo=timezone.utc), nome_cliente="Carol", email_cliente="paula@email.com", telefone_cliente="444")
 
     client = Client()
     response = client.get('/api/agendamentos/')
