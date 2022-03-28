@@ -6,47 +6,28 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from agenda.models import Agendamento
 from agenda.serializers import AgendamentoSerializer
+from rest_framework import mixins
+from rest_framework import generics
 
-class AgendamentoDetail(APIView):
-  def get(self, request):
-    obj = get_object_or_404(Agendamento, id=id)
-    serializer = AgendamentoSerializer(obj)
+class AgendamentoDetail(mixins.RetrieveModelMixin, mixins.UpdateModelMixin, mixins.DestroyModelMixin, generics.GenericAPIView):
+  queryset = Agendamento.objects.all()
+  serializer_class = AgendamentoSerializer
 
-    return JsonResponse(serializer.data)
+  def get(self, request, *args, **kwargs):
+    return self.retrieve(request, *args, **kwargs)
 
-  def patch(self, request):
-    data = request.data
-    obj = get_object_or_404(Agendamento, id=id)
-    serializer = AgendamentoSerializer(obj, data=data, partial=True)
+  def patch(self, request, *args, **kwargs):
+    return self.partial_update(request, *args, **kwargs)
 
-    if serializer.is_valid():
-      serializer.save()
+  def delete(self, request, *args, **kwargs):
+    return self.destroy(request, *args, **kwargs)
 
-      return JsonResponse(serializer.data, status=200)
-    
-    return JsonResponse(serializer.errors, status=400)
+class AgendamentoList(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
+  queryset = Agendamento.objects.all()
+  serializer_class = AgendamentoSerializer
 
-  def delete(self, request, id):
-    obj = get_object_or_404(Agendamento, id=id)
-    obj.is_canceled = True
-    obj.save()
+  def get(self, request, *args, **kwargs):
+    return self.list(request, *args, **kwargs)
 
-    return Response(status=204)
-
-class AgendamentoList(APIView):
-  def get(self, request):
-    qs = Agendamento.objects.all().filter(is_canceled=False)
-    serializer = AgendamentoSerializer(qs, many=True)
-
-    return JsonResponse(serializer.data, safe=False)
-
-  def post(self, request):
-    data = request.data
-    serializer = AgendamentoSerializer(data=data)
-
-    if serializer.is_valid():
-      serializer.save()
-
-      return JsonResponse(serializer.data, status=201)
-
-    return JsonResponse(serializer.errors, status=400)
+  def post(self, request, *args, **kwargs):
+    return self.create(request, *args, **kwargs)
