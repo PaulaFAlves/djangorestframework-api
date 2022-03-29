@@ -17,5 +17,9 @@ class AgendamentoDetail(generics.RetrieveUpdateDestroyAPIView):
     instance.is_canceled = True
     instance.save()
 class AgendamentoList(generics.ListCreateAPIView):
-  queryset = Agendamento.objects.all()
   serializer_class = AgendamentoSerializer
+
+  def get_queryset(self):
+    username = self.request.query_params.get('username', None)
+    queryset = Agendamento.objects.filter(prestador__username=username)
+    return queryset
