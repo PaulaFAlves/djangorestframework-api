@@ -6,6 +6,7 @@ from rest_framework.test import APITestCase
 from agenda.models import Agendamento
 from django.utils import timezone 
 from rest_framework import serializers
+from django.contrib.auth.models import User
 
 class TestAgendamento(APITestCase):
   def test_listagem_vazia(self):
@@ -19,49 +20,46 @@ class TestAgendamento(APITestCase):
         'data_horario': '2022-12-12T00:00:00Z', 
         'nome_cliente': 'PAula', 
         'email_cliente': 'paula@email.com', 
-        'telefone_cliente': '444'}, 
-      {
-        'id': 2, 
-        'data_horario': '2023-12-12T00:00:00Z', 
-        'nome_cliente': 'Carol', 
-        'email_cliente': 'paula@email.com', 
-        'telefone_cliente': '444'
-        }]
+        'telefone_cliente': '444',
+        'prestador': 'admin',
+        'is_canceled': False
+        }
+      ]
 
-    Agendamento.objects.create(data_horario=datetime(2022, 12, 12, tzinfo=timezone.utc), nome_cliente="PAula", email_cliente="paula@email.com", telefone_cliente="444")
-    Agendamento.objects.create(data_horario=datetime(2023, 12, 12, tzinfo=timezone.utc), nome_cliente="Carol", email_cliente="paula@email.com", telefone_cliente="444")
+    Agendamento.objects.create(data_horario=datetime(2022, 12, 12, tzinfo=timezone.utc), nome_cliente="PAula", email_cliente="paula@email.com", telefone_cliente="444", prestador=User.objects.create(username='admin'))
 
     client = Client()
-    response = client.get('/api/agendamentos/')
+    response = client.get('/api/agendamentos/?username=admin')
     data = json.loads(response.content)
 
-    self.assertEqual(len(data), 2)
+    self.assertEqual(len(data), 1)
     self.assertEqual(data, agendamentos_esperados)
 
-  def test_quanto_request_retorna_400(self):
+  def test_quando_request_retorna_400(self):
+    User.objects.create(username='admin')
     client = Client()
-    response = client.post('/api/agendamentos/', {'data_horario':'2020-12-12T00:00:00Z', 'nome_cliente':"PAula", 'email_cliente':"paula@email.com", 'telefone_cliente':"444" })
+    response = client.post('/api/agendamentos/', {'data_horario':'2020-12-12T00:00:00Z', 'nome_cliente':"PAula", 'email_cliente':"paula@email.com", 'telefone_cliente':"444", "prestador":"admin"})
     self.assertEqual(response.status_code, 400)
 
     data = json.loads(response.content)
     self.assertEqual(data, {'data_horario': ['Agendamento não pode ser feito no passado.']})
 
   def test_cria_agendamento(self):
-    Agendamento.objects.create(data_horario=timezone.now(), nome_cliente="PAula", email_cliente="paula@email.com", telefone_cliente="444")
+    Agendamento.objects.create(data_horario=timezone.now(), nome_cliente="PAula", email_cliente="paula@email.com", telefone_cliente="444", prestador=User.objects.create(username='admin'))
 
     client = Agendamento.objects.get(nome_cliente="PAula")
 
     self.assertEqual(client.nome_cliente, "PAula")
 
   def test_agendamento_tem_atributo_is_canceled_false_quando_criado(self):
-    Agendamento.objects.create(data_horario=timezone.now(), nome_cliente="PAula", email_cliente="paula@email.com", telefone_cliente="444")
+    Agendamento.objects.create(data_horario=timezone.now(), nome_cliente="PAula", email_cliente="paula@email.com", telefone_cliente="444", prestador=User.objects.create(username='admin'))
 
     client = Agendamento.objects.get(nome_cliente="PAula")
 
     self.assertFalse(client.is_canceled)
 
   def test_atributo_is_canceled_true_quando_agendamento_cancelado(self):
-    Agendamento.objects.create(data_horario=timezone.now(), nome_cliente="PAula", email_cliente="paula@email.com", telefone_cliente="444")
+    Agendamento.objects.create(data_horario=timezone.now(), nome_cliente="PAula", email_cliente="paula@email.com", telefone_cliente="444", prestador=User.objects.create(username='admin'))
 
     client = Agendamento.objects.get(nome_cliente="PAula")
     response = self.client.delete(f'/api/agendamentos/{client.id}/')
