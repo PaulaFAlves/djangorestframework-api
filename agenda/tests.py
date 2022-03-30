@@ -10,7 +10,10 @@ from django.contrib.auth.models import User
 
 class TestAgendamento(APITestCase):
   def test_listagem_vazia(self):
-    response = self.client.get('/api/agendamentos/')
+    user = User.objects.create(email="bob@email.com", username="bob", password="123")
+    self.client.force_authenticate(user)
+
+    response = self.client.get('/api/agendamentos/?username=bob')
     data = json.loads(response.content)
     self.assertEqual(data, [])
 
@@ -26,10 +29,11 @@ class TestAgendamento(APITestCase):
         }
       ]
 
-    Agendamento.objects.create(data_horario=datetime(2022, 12, 12, tzinfo=timezone.utc), nome_cliente="PAula", email_cliente="paula@email.com", telefone_cliente="444", prestador=User.objects.create(username='admin'))
+    user = User.objects.create(email="bob@email.com", username="admin", password="123")
+    Agendamento.objects.create(data_horario=datetime(2022, 12, 12, tzinfo=timezone.utc), nome_cliente="PAula", email_cliente="paula@email.com", telefone_cliente="444", prestador=user)
 
-    client = Client()
-    response = client.get('/api/agendamentos/?username=admin')
+    self.client.force_authenticate(user)
+    response = self.client.get('/api/agendamentos/?username=admin')
     data = json.loads(response.content)
 
     self.assertEqual(len(data), 1)
@@ -37,8 +41,7 @@ class TestAgendamento(APITestCase):
 
   def test_quando_request_retorna_400(self):
     User.objects.create(username='admin')
-    client = Client()
-    response = client.post('/api/agendamentos/', {'data_horario':'2020-12-12T00:00:00Z', 'nome_cliente':"PAula", 'email_cliente':"paula@email.com", 'telefone_cliente':"444", "prestador":"admin"})
+    response = self.client.post('/api/agendamentos/', {'data_horario':'2020-12-12T00:00:00Z', 'nome_cliente':"PAula", 'email_cliente':"paula@email.com", 'telefone_cliente':"444", "prestador":"admin"})
     self.assertEqual(response.status_code, 400)
 
     data = json.loads(response.content)
@@ -59,11 +62,39 @@ class TestAgendamento(APITestCase):
     self.assertFalse(client.is_canceled)
 
   def test_atributo_is_canceled_true_quando_agendamento_cancelado(self):
-    Agendamento.objects.create(data_horario=timezone.now(), nome_cliente="PAula", email_cliente="paula@email.com", telefone_cliente="444", prestador=User.objects.create(username='admin'))
+    user = User.objects.create(email="bob@email.com", username="admin", password="123")
+    Agendamento.objects.create(data_horario=timezone.now(), nome_cliente="PAula", email_cliente="paula@email.com", telefone_cliente="444", prestador=user)
 
     client = Agendamento.objects.get(nome_cliente="PAula")
+
+    self.client.force_authenticate(user)
+
     response = self.client.delete(f'/api/agendamentos/{client.id}/')
     self.assertEqual(response.status_code, 204)
 
     client = Agendamento.objects.get(id=client.id)
     self.assertTrue(client.is_canceled)
+    
+
+  def test_prestador_nao_existe(self):
+    User.objects.create(username='admin')
+    response = self.client.post('/api/agendamentos/', {'data_horario':'2023-12-12T00:00:00Z', 'nome_cliente':"PAula", 'email_cliente':"paula@email.com", 'telefone_cliente':"444", "prestador":"bob"})
+
+    self.assertEqual(response.status_code, 400)
+    
+    data = json.loads(response.content)
+    self.assertEqual(data, {'prestador': ['Prestador não existe']})
+
+  def test_prestador_nao_autorizado(self):
+    user = User.objects.create(email="bob@email.com", username="admin", password="123")
+    user2 = User.objects.create(email="bob@email.com", username="bob", password="123")
+
+    client = Agendamento.objects.create(data_horario=timezone.now(), nome_cliente="PAula", email_cliente="paula@email.com", telefone_cliente="444", prestador=user)
+
+    self.client.force_authenticate(user)
+
+    response = self.client.get(f'/api/agendamentos/?username=admin/')
+    self.assertEqual(response.status_code, 403)
+
+    data = json.loads(response.content)
+    self.assertEqual(data, {'detail': 'You do not have permission to perform this action.'})
