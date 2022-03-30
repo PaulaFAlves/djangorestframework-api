@@ -6,7 +6,6 @@ from django.utils import timezone
 from django.contrib.auth.models import User
 
 class AgendamentoSerializer(serializers.ModelSerializer):
-
   class Meta: 
     model = Agendamento
     fields = '__all__'
@@ -34,3 +33,10 @@ class AgendamentoSerializer(serializers.ModelSerializer):
       raise serializers.ValidationError("Email brasileito deve estar associado a um número do Brasil (+55).")
     
     return attrs
+
+class PrestadorSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = User
+    fields = ['id', 'username', 'agendamentos']
+
+  agendamentos = AgendamentoSerializer(many=True, read_only=True)
