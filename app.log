@@ -56,3 +56,27 @@ Traceback (most recent call last):
 ValueError: Invalid isoformat string: '2022-01-0'
 2022-04-02 18:14:30,456 django.utils.autoreload INFO     /Users/paulafa/python-codarme/djangoerestapi-api/agenda/libs/brasil_api.py changed, reloading.
 2022-04-02 18:14:30,632 django.utils.autoreload INFO     Watching for file changes with StatReloader
+2022-04-02 18:31:54,825 root         INFO     Fazendo requisicao para BrasilAPI para a data 2023-12-12
+2022-04-02 18:31:54,832 urllib3.connectionpool DEBUG    Starting new HTTPS connection (1): brasilapi.com.br:443
+2022-04-02 18:31:55,050 urllib3.connectionpool DEBUG    https://brasilapi.com.br:443 "GET /api/feriados/v1/2023/ HTTP/1.1" 308 None
+2022-04-02 18:31:55,130 urllib3.connectionpool DEBUG    https://brasilapi.com.br:443 "GET /api/feriados/v1/2023 HTTP/1.1" 200 None
+2022-04-02 18:31:55,148 django.request WARNING  Bad Request: /api/agendamentos/
+2022-04-02 18:31:55,167 django.request WARNING  Forbidden: /api/agendamentos/
+2022-04-02 18:31:55,172 root         INFO     Fazendo requisicao para BrasilAPI para a data 2023-12-12
+2022-04-02 18:31:55,175 urllib3.connectionpool DEBUG    Starting new HTTPS connection (1): brasilapi.com.br:443
+2022-04-02 18:31:55,365 urllib3.connectionpool DEBUG    https://brasilapi.com.br:443 "GET /api/feriados/v1/2023/ HTTP/1.1" 308 None
+2022-04-02 18:31:55,450 urllib3.connectionpool DEBUG    https://brasilapi.com.br:443 "GET /api/feriados/v1/2023 HTTP/1.1" 200 None
+2022-04-02 18:31:55,463 django.request WARNING  Bad Request: /api/agendamentos/
+2022-04-02 18:31:55,472 django.request WARNING  Bad Request: /api/agendamentos/
+2022-04-02 18:40:07,284 root         INFO     Fazendo requisicao para BrasilAPI para a data 2023-12-12
+2022-04-02 18:40:07,645 urllib3.connectionpool DEBUG    Starting new HTTPS connection (1): brasilapi.com.br:443
+2022-04-02 18:40:08,979 urllib3.connectionpool DEBUG    https://brasilapi.com.br:443 "GET /api/feriados/v1/2023/ HTTP/1.1" 308 None
+2022-04-02 18:40:09,091 urllib3.connectionpool DEBUG    https://brasilapi.com.br:443 "GET /api/feriados/v1/2023 HTTP/1.1" 200 None
+2022-04-02 18:40:09,116 django.request WARNING  Bad Request: /api/agendamentos/
+2022-04-02 18:40:09,134 django.request WARNING  Forbidden: /api/agendamentos/
+2022-04-02 18:40:09,140 root         INFO     Fazendo requisicao para BrasilAPI para a data 2023-12-12
+2022-04-02 18:40:09,143 urllib3.connectionpool DEBUG    Starting new HTTPS connection (1): brasilapi.com.br:443
+2022-04-02 18:40:09,366 urllib3.connectionpool DEBUG    https://brasilapi.com.br:443 "GET /api/feriados/v1/2023/ HTTP/1.1" 308 None
+2022-04-02 18:40:09,464 urllib3.connectionpool DEBUG    https://brasilapi.com.br:443 "GET /api/feriados/v1/2023 HTTP/1.1" 200 None
+2022-04-02 18:40:09,482 django.request WARNING  Bad Request: /api/agendamentos/
+2022-04-02 18:40:09,491 django.request WARNING  Bad Request: /api/agendamentos/
