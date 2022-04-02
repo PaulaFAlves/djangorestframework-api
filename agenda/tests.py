@@ -1,12 +1,10 @@
 from datetime import datetime
 import json
-from django.forms import ValidationError
-from django.test import Client
 from rest_framework.test import APITestCase
 from agenda.models import Agendamento
 from django.utils import timezone 
-from rest_framework import serializers
 from django.contrib.auth.models import User
+from unittest import mock
 
 class TestAgendamento(APITestCase): 
   def test_listagem_vazia(self):
@@ -100,12 +98,14 @@ class TestAgendamento(APITestCase):
     self.assertEqual(data, {'detail': 'You do not have permission to perform this action.'})
 
 class TestGetHorarios(APITestCase):
-  def test_quando_data_e_feriado_retorna_lista_vazia(self):
+  @mock.patch("agenda.libs.brasil_api.is_feriado", return_value=True)
+  def test_quando_data_e_feriado_retorna_lista_vazia(self, _):
     response = self.client.get("/api/horarios/?data=2022-12-25")
     data = json.loads(response.content)
     self.assertEqual(data, [])
 
-  def test_quando_data_nao_e_feriado_retorna_lista_cheia(self):
+  @mock.patch("agenda.libs.brasil_api.is_feriado", return_value=False)
+  def test_quando_data_nao_e_feriado_retorna_lista_cheia(self, _):
     response = self.client.get("/api/horarios/?data=2022-12-12")
     data = json.loads(response.content)
     self.assertNotEqual(data, [])
