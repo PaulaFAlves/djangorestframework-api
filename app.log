@@ -1,0 +1,58 @@
+2022-04-02 18:09:54,441 django.utils.autoreload INFO     Watching for file changes with StatReloader
+2022-04-02 18:10:49,943 django.utils.autoreload INFO     Watching for file changes with StatReloader
+2022-04-02 18:11:04,439 django.utils.autoreload INFO     /Users/paulafa/python-codarme/djangoerestapi-api/tamarcado/settings/dev.py changed, reloading.
+2022-04-02 18:11:04,628 django.utils.autoreload INFO     Watching for file changes with StatReloader
+2022-04-02 18:11:06,960 django.request ERROR    Internal Server Error: /api/horarios/
+Traceback (most recent call last):
+  File "/Users/paulafa/python-codarme/djangoerestapi-api/venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 47, in inner
+    response = get_response(request)
+  File "/Users/paulafa/python-codarme/djangoerestapi-api/venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 181, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/paulafa/python-codarme/djangoerestapi-api/venv/lib/python3.10/site-packages/django/views/decorators/csrf.py", line 54, in wrapped_view
+    return view_func(*args, **kwargs)
+  File "/Users/paulafa/python-codarme/djangoerestapi-api/venv/lib/python3.10/site-packages/django/views/generic/base.py", line 69, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "/Users/paulafa/python-codarme/djangoerestapi-api/venv/lib/python3.10/site-packages/rest_framework/views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+  File "/Users/paulafa/python-codarme/djangoerestapi-api/venv/lib/python3.10/site-packages/rest_framework/views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "/Users/paulafa/python-codarme/djangoerestapi-api/venv/lib/python3.10/site-packages/rest_framework/views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "/Users/paulafa/python-codarme/djangoerestapi-api/venv/lib/python3.10/site-packages/rest_framework/views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "/Users/paulafa/python-codarme/djangoerestapi-api/venv/lib/python3.10/site-packages/rest_framework/decorators.py", line 50, in handler
+    return func(*args, **kwargs)
+  File "/Users/paulafa/python-codarme/djangoerestapi-api/agenda/views.py", line 59, in get_horarios
+    horarios_disponiveis = sorted(list(get_horarios_disponiveis(data)))
+  File "/Users/paulafa/python-codarme/djangoerestapi-api/agenda/utils.py", line 8, in get_horarios_disponiveis
+    if brasil_api.is_feriado(data):
+  File "/Users/paulafa/python-codarme/djangoerestapi-api/agenda/libs/brasil_api.py", line 7, in is_feriado
+    logging.info(f"Fazendo requisicao para BrasilAPI para a data {date.isoformat()}")
+TypeError: unbound method date.isoformat() needs an argument
+2022-04-02 18:12:46,859 django.utils.autoreload INFO     /Users/paulafa/python-codarme/djangoerestapi-api/agenda/libs/brasil_api.py changed, reloading.
+2022-04-02 18:12:47,034 django.utils.autoreload INFO     Watching for file changes with StatReloader
+2022-04-02 18:13:09,028 django.request ERROR    Internal Server Error: /api/horarios/
+Traceback (most recent call last):
+  File "/Users/paulafa/python-codarme/djangoerestapi-api/venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 47, in inner
+    response = get_response(request)
+  File "/Users/paulafa/python-codarme/djangoerestapi-api/venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 181, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/paulafa/python-codarme/djangoerestapi-api/venv/lib/python3.10/site-packages/django/views/decorators/csrf.py", line 54, in wrapped_view
+    return view_func(*args, **kwargs)
+  File "/Users/paulafa/python-codarme/djangoerestapi-api/venv/lib/python3.10/site-packages/django/views/generic/base.py", line 69, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "/Users/paulafa/python-codarme/djangoerestapi-api/venv/lib/python3.10/site-packages/rest_framework/views.py", line 509, in dispatch
+    response = self.handle_exception(exc)
+  File "/Users/paulafa/python-codarme/djangoerestapi-api/venv/lib/python3.10/site-packages/rest_framework/views.py", line 469, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "/Users/paulafa/python-codarme/djangoerestapi-api/venv/lib/python3.10/site-packages/rest_framework/views.py", line 480, in raise_uncaught_exception
+    raise exc
+  File "/Users/paulafa/python-codarme/djangoerestapi-api/venv/lib/python3.10/site-packages/rest_framework/views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "/Users/paulafa/python-codarme/djangoerestapi-api/venv/lib/python3.10/site-packages/rest_framework/decorators.py", line 50, in handler
+    return func(*args, **kwargs)
+  File "/Users/paulafa/python-codarme/djangoerestapi-api/agenda/views.py", line 57, in get_horarios
+    data = datetime.fromisoformat(data).date()
+ValueError: Invalid isoformat string: '2022-01-0'
+2022-04-02 18:14:30,456 django.utils.autoreload INFO     /Users/paulafa/python-codarme/djangoerestapi-api/agenda/libs/brasil_api.py changed, reloading.
+2022-04-02 18:14:30,632 django.utils.autoreload INFO     Watching for file changes with StatReloader
