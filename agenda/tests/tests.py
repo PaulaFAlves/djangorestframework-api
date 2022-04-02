@@ -45,6 +45,11 @@ class TestAgendamento(APITestCase):
     data = json.loads(response.content)
     self.assertEqual(data, {'data_horario': ['Agendamento não pode ser feito no passado.']})
 
+  def test_email_brasileiro_com_telefone_brasileiro(self):
+    User.objects.create(username='admin')
+    response = self.client.post('/api/agendamentos/', {'data_horario':'2023-12-12T09:00:00Z', 'nome_cliente':"PAula", 'email_cliente':"paula@email.com.br", 'telefone_cliente':"+444", "prestador":"admin"})
+    self.assertEqual(response.status_code, 400)
+
   def test_cria_agendamento(self):
     Agendamento.objects.create(data_horario=timezone.now(), nome_cliente="PAula", email_cliente="paula@email.com", telefone_cliente="444", prestador=User.objects.create(username='admin'))
 
