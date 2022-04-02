@@ -8,7 +8,7 @@ from django.utils import timezone
 from rest_framework import serializers
 from django.contrib.auth.models import User
 
-class TestAgendamento(APITestCase):
+class TestAgendamento(APITestCase): 
   def test_listagem_vazia(self):
     user = User.objects.create(email="bob@email.com", username="bob", password="123")
     self.client.force_authenticate(user)
@@ -78,7 +78,7 @@ class TestAgendamento(APITestCase):
 
   def test_prestador_nao_existe(self):
     User.objects.create(username='admin')
-    response = self.client.post('/api/agendamentos/', {'data_horario':'2023-12-12T00:00:00Z', 'nome_cliente':"PAula", 'email_cliente':"paula@email.com", 'telefone_cliente':"444", "prestador":"bob"})
+    response = self.client.post('/api/agendamentos/', {'data_horario':'2023-12-12T14:00:00Z', 'nome_cliente':"PAula", 'email_cliente':"paula@email.com", 'telefone_cliente':"444", "prestador":"bob"})
 
     self.assertEqual(response.status_code, 400)
     
@@ -98,3 +98,16 @@ class TestAgendamento(APITestCase):
 
     data = json.loads(response.content)
     self.assertEqual(data, {'detail': 'You do not have permission to perform this action.'})
+
+class TestGetHorarios(APITestCase):
+  def test_quando_data_e_feriado_retorna_lista_vazia(self):
+    response = self.client.get("/api/horarios/?data=2022-12-25")
+    data = json.loads(response.content)
+    self.assertEqual(data, [])
+
+  def test_quando_data_nao_e_feriado_retorna_lista_cheia(self):
+    response = self.client.get("/api/horarios/?data=2022-12-12")
+    data = json.loads(response.content)
+    self.assertNotEqual(data, [])
+    self.assertEqual(data[0], '2022-12-12T09:00:00Z')
+    self.assertEqual(data[-1], '2022-12-12T17:30:00Z')
