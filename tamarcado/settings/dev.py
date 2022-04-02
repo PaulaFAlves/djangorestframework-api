@@ -4,4 +4,12 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-# SECRET_KEY = ''
+LOGGING = {
+  **LOGGING,
+  'loggers': {
+        '': {  # '' representa o logger "raíz" (root). Todos "loggers" herdarão dele.
+            'level': 'DEBUG',
+            'handlers': ['console', 'file']
+        }
+    }
+}
