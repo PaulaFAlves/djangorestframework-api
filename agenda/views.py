@@ -44,7 +44,7 @@ class AgendamentoList(generics.ListCreateAPIView):
     queryset = Agendamento.objects.filter(prestador__username=username)
     return queryset
 
-class PrestadorList(generics.ListAPIView):
+class PrestadorList(generics.ListCreateAPIView):
   serializer_class = PrestadorSerializer
   queryset = User.objects.all()
 
