@@ -63,4 +63,4 @@ def get_horarios(request):
 
 @api_view(http_method_names=["GET"])
 def healthcheck(request):
-  return Response({"status": "ok"}, status=200)
+  return Response({"status": "ok", "message": "Everything is ok!"}, status=200)
