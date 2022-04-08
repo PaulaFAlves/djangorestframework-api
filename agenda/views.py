@@ -1,5 +1,5 @@
 from django.http import HttpResponse, JsonResponse
-from requests import Response
+from rest_framework.response import Response
 from agenda.models import Agendamento
 from agenda.serializers import AgendamentoSerializer, HorariosSerializer, PrestadorSerializer
 from rest_framework import permissions
