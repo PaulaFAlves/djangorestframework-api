@@ -1,4 +1,5 @@
 from django.http import HttpResponse, JsonResponse
+from requests import Response
 from agenda.models import Agendamento
 from agenda.serializers import AgendamentoSerializer, HorariosSerializer, PrestadorSerializer
 from rest_framework import permissions
@@ -58,3 +59,8 @@ def get_horarios(request):
 
   horarios_disponiveis = sorted(list(get_horarios_disponiveis(data)))
   return JsonResponse(horarios_disponiveis, safe=False)
+
+
+@api_view
+def healthcheck(request):
+  return Response({"status": "ok"}, status=200)
